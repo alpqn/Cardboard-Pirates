@@ -4,10 +4,10 @@
 ![image](https://github.com/user-attachments/assets/9427135b-6422-48ca-ab22-38e2036a3f70)
 
 ## Prerequisites
-- [SDL](https://github.com/libsdl-org/SDL)
-- [SDL_mixer](https://github.com/libsdl-org/SDL_mixer)
-- [SDL_image](https://github.com/libsdl-org/SDL_image)
-- [SDL_ttf](https://github.com/libsdl-org/SDL_ttf)
+- [SDL](https://github.com/libsdl-org/SDL) (version 2)
+- [SDL_mixer](https://github.com/libsdl-org/SDL_mixer) (version 2)
+- [SDL_image](https://github.com/libsdl-org/SDL_image) (version 2)
+- [SDL_ttf](https://github.com/libsdl-org/SDL_ttf) (version 2)
 - A compiler.
 
 # Installation
