@@ -2,23 +2,23 @@
 #include "GameUtils.hpp"
 #include "Sound.hpp"
 
-Cannon::Cannon(float x, float y, float angle, SDL_Renderer*& renderer)
-:Texture{ x, y, 10.0f, 10.0f, angle, "cannon.png", renderer }
+Cannon::Cannon(float x, float y, float angle)
+:Texture{ x, y, 10.0f, 10.0f, angle, "cannon.png" }
 ,m_dX{ sinf(angle / 180.0f * g::PI) * g::bulletSpeed }
 ,m_dY{ -cosf(angle / 180.0f * g::PI) * g::bulletSpeed }
 ,m_collider{ x, y, 10.0f, 10.0f, angle }
-,m_explosion{ "explosion.png", renderer }
+,m_explosion{ "explosion.png" }
 {
     m_explosion.setScale(40.0f, 40.0f);
 }
 
-void Cannon::render(SDL_Renderer*& renderer)
+void Cannon::render()
 {
     // If there is an explosion animation timer.
-    if(m_sinceExplosion) { m_explosion.render(renderer); }
+    if(m_sinceExplosion) { m_explosion.render(); }
     else
     {
-        SDL_RenderCopyExF(renderer, m_texture, NULL, &m_rect, m_angle, NULL, SDL_FLIP_NONE);
+        Texture::render();
         setX(getX() + m_dX);
         setY(getY() + m_dY);
     }

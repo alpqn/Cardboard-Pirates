@@ -7,7 +7,6 @@ class Game
 {
 private:
     SDL_Window* m_window;
-    SDL_Renderer* m_renderer;
     int m_wWidth;
     int m_wHeight;
     bool m_running{ true };

@@ -5,16 +5,16 @@
 #include "Texture.hpp"
 #include "ResourceMgr.hpp"
 
-Texture::Texture(float x, float y, float w, float h, float angle, const std::string& file, SDL_Renderer*& renderer)
+Texture::Texture(float x, float y, float w, float h, float angle, const std::string& file)
 :m_rect{ x - w/2, y - h/2, w, h }
 ,m_angle{ angle }
 {
-    m_texture = ResourceMgr::getMgr().getTexture(g::imagesDirectory + file, renderer);
+    m_texture = ResourceMgr::getMgr().getTexture(g::imagesDirectory + file);
 }
 
-Texture::Texture(const std::string& file, SDL_Renderer*& renderer)
+Texture::Texture(const std::string& file)
 {
-    m_texture = ResourceMgr::getMgr().getTexture(g::imagesDirectory + file, renderer);
+    m_texture = ResourceMgr::getMgr().getTexture(g::imagesDirectory + file);
 }
 
 Texture::Texture(float x, float y, float w, float h, float angle)
@@ -23,20 +23,20 @@ Texture::Texture(float x, float y, float w, float h, float angle)
 {
 }
 
-void Texture::render(SDL_Renderer*& renderer) const
+void Texture::render() const
 {
-    SDL_RenderCopyExF(renderer, m_texture, NULL, &m_rect, m_angle, NULL, SDL_FLIP_NONE);
+    SDL_RenderCopyExF(g::renderer, m_texture, NULL, &m_rect, m_angle, NULL, SDL_FLIP_NONE);
 }
 
-void Texture::changeTexture(const std::string& file, SDL_Renderer*& renderer)
+void Texture::changeTexture(const std::string& file)
 {
-    m_texture = ResourceMgr::getMgr().getTexture(g::imagesDirectory + file, renderer);
+    m_texture = ResourceMgr::getMgr().getTexture(g::imagesDirectory + file);
 }
 
-void Texture::getTextureFromFont(TTF_Font* font, const std::string& text, SDL_Color color, SDL_Renderer*& renderer)
+void Texture::getTextureFromFont(TTF_Font* font, const std::string& text, SDL_Color color)
 {
     SDL_Surface* s{ TTF_RenderText_Solid(font, text.c_str(), color) };
-    m_texture = SDL_CreateTextureFromSurface(renderer, s);
+    m_texture = SDL_CreateTextureFromSurface(g::renderer, s);
     SDL_FreeSurface(s);
 }
 

@@ -3,12 +3,12 @@
 
 #include "Map.hpp"
 
-Map::Map(const std::string& file, SDL_Renderer*& renderer)
+Map::Map(const std::string& file)
 {
-    loadMapFromFile(file, renderer);
+    loadMapFromFile(file);
 }
 
-void Map::loadMapFromFile(const std::string& file, SDL_Renderer*& renderer)
+void Map::loadMapFromFile(const std::string& file)
 {
     m_colliders.clear();
     m_tiles.clear();
@@ -36,7 +36,7 @@ void Map::loadMapFromFile(const std::string& file, SDL_Renderer*& renderer)
                 if(!collision && j > 2) { if(concat(ids[i][j - 3], ids[i][j - 2]) == "00") collision = true; }
                 if(!collision && j/2 < mapW - 2) { if(concat(ids[i][j + 1], ids[i][j + 2]) == "00") collision = true;}
 
-                m_tiles.push_back({ j/2 * g::tileW + g::tileW/2, i * g::tileH + g::tileH/2, id, renderer });
+                m_tiles.push_back({ j/2 * g::tileW + g::tileW/2, i * g::tileH + g::tileH/2, id });
                 if(collision) m_colliders.push_back({ j/2 * g::tileW + g::tileW/2, i * g::tileH + g::tileH/2, g::tileW, g::tileW, 0.0f });
             }
         }
@@ -44,7 +44,7 @@ void Map::loadMapFromFile(const std::string& file, SDL_Renderer*& renderer)
     for(auto& c: m_colliders) { c.update(); }
 }
 
-void Map::render(SDL_Renderer*& renderer) const
+void Map::render() const
 {
-    for(const auto& t: m_tiles) { t.render(renderer); }
+    for(const auto& t: m_tiles) { t.render(); }
 }

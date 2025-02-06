@@ -5,15 +5,15 @@
 #include "Sound.hpp"
 #include "GameUtils.hpp"
 
-Ship::Ship(Color color, float x, float y, float angle, SDL_Renderer*& renderer)
+Ship::Ship(Color color, float x, float y, float angle)
 :m_color{ color }
 ,Texture{ x, y, 66.0f, 113.0f, angle }
 ,m_collider{ x, y, 52.0f, 100.0f, angle }
 {
-    changeTexture("ship" + getColorAsString() + "1.png", renderer);
+    changeTexture("ship" + getColorAsString() + "1.png");
 }
 
-void Ship::render(SDL_Renderer*& renderer)
+void Ship::render()
 {
     // Remove cannons that are out of bounds or/and destroyed
     if(m_cannons.size())
@@ -28,23 +28,23 @@ void Ship::render(SDL_Renderer*& renderer)
         if(f != m_cannons.end()) { m_cannons.erase(f); }
     }
 
-    for(auto& c : m_cannons) { c.render(renderer); }
-    if(m_health < 30) changeTexture("ship" + getColorAsString() + "3.png", renderer);
-    else if(m_health < 90) changeTexture("ship" + getColorAsString() + "2.png", renderer);
-    else if(90 < m_health) changeTexture("ship" + getColorAsString() + "1.png", renderer);
+    for(auto& c : m_cannons) { c.render(); }
+    if(m_health < 30) changeTexture("ship" + getColorAsString() + "3.png");
+    else if(m_health < 90) changeTexture("ship" + getColorAsString() + "2.png");
+    else if(90 < m_health) changeTexture("ship" + getColorAsString() + "1.png");
     if(m_health > 0)
     {
-        SDL_RenderCopyExF(renderer, m_texture, NULL, &m_rect, m_angle, NULL, SDL_FLIP_NONE);
+        Texture::render();
     }
 }
 
-void Ship::input(SDL_Scancode thrust, SDL_Scancode left, SDL_Scancode right, SDL_Scancode shoot, SDL_Renderer*& renderer)
+void Ship::input(SDL_Scancode thrust, SDL_Scancode left, SDL_Scancode right, SDL_Scancode shoot)
 {
     const Uint8* state{ SDL_GetKeyboardState(NULL) };
     if(state[thrust]) { thrustForward(); m_collider.thrustForward();  }
     if(state[right]) { rotateRight(); m_collider.rotateRight(); }
     if(state[left]) { rotateLeft(); m_collider.rotateLeft(); }
-    if(state[shoot]) { shootForward(renderer); }
+    if(state[shoot]) { shootForward(); }
 }
 
 const std::string Ship::getColorAsString() const
@@ -57,12 +57,12 @@ const std::string Ship::getColorAsString() const
     return "";
 }
 
-void Ship::shootForward(SDL_Renderer*& renderer)
+void Ship::shootForward()
 {
     // 0.5 seconds cooldown
     if(SDL_GetTicks() - m_shootCooldown > 500)
     {
-        m_cannons.push_back({ getX(), getY(), m_angle, renderer });
+        m_cannons.push_back({ getX(), getY(), m_angle });
         static Sound shootingSound{ "fire.wav" }; shootingSound.play();
         m_shootCooldown = SDL_GetTicks();
     }

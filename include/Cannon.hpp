@@ -12,9 +12,9 @@ private:
     Collider m_collider;
     Texture m_explosion;
 public:
-    Cannon(float x, float y, float angle, SDL_Renderer*& renderer);
+    Cannon(float x, float y, float angle);
 
-    void render(SDL_Renderer*& renderer);
+    void render();
     bool isColliding(const Collider& target);
     bool isExploding() const;
 

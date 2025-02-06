@@ -15,13 +15,13 @@ protected:
     SDL_FRect m_rect;
     float m_angle;
 public:
-    Texture(float x, float y, float w, float h, float angle, const std::string& file, SDL_Renderer*& renderer);
-    Texture(const std::string& file, SDL_Renderer*& renderer);
+    Texture(float x, float y, float w, float h, float angle, const std::string& file);
+    Texture(const std::string& file);
     Texture(float x, float y, float w, float h, float angle);
 
-    void render(SDL_Renderer*& renderer) const;
-    void changeTexture(const std::string& file, SDL_Renderer*& renderer);
-    void getTextureFromFont(TTF_Font* font, const std::string& text, SDL_Color color, SDL_Renderer*& renderer);
+    void render() const;
+    void changeTexture(const std::string& file);
+    void getTextureFromFont(TTF_Font* font, const std::string& text, SDL_Color color);
     void rotateLeft() { m_angle -= g::rotationMultiplier; }
     void rotateRight() { m_angle += g::rotationMultiplier; }
     void thrustForward();

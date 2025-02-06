@@ -19,7 +19,7 @@ private:
     ResourceMgr& operator=(const ResourceMgr&) = delete;
 public:
     static ResourceMgr& getMgr();
-    SDL_Texture* getTexture(const std::string& file, SDL_Renderer*& renderer);
+    SDL_Texture* getTexture(const std::string& file);
     TTF_Font* getFont(const std::string& file, int ptsize);
     Mix_Chunk* getSound(const std::string& file);
 };

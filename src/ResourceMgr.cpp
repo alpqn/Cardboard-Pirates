@@ -3,6 +3,7 @@
 #include <SDL2/SDL_image.h>
 
 #include "ResourceMgr.hpp"
+#include "GameUtils.hpp"
 
 ResourceMgr& ResourceMgr::getMgr()
 {
@@ -10,13 +11,13 @@ ResourceMgr& ResourceMgr::getMgr()
     return s_mgr;
 }
 
-SDL_Texture* ResourceMgr::getTexture(const std::string& file, SDL_Renderer*& renderer)
+SDL_Texture* ResourceMgr::getTexture(const std::string& file)
 {
     auto search = m_textureDatabase.find(file);
     if(search != m_textureDatabase.end()) { return search->second; }
     else
     {
-        SDL_Texture* t{ IMG_LoadTexture(renderer,file.c_str()) };
+        SDL_Texture* t{ IMG_LoadTexture(g::renderer,file.c_str()) };
         if (!t) { std::cerr << "ERROR: " << file << IMG_GetError(); exit(1); }
         m_textureDatabase[file] = t;
         return t;
