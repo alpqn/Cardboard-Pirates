@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "Cannon.hpp"
 #include "GameUtils.hpp"
 #include "Sound.hpp"

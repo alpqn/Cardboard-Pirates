@@ -1,3 +1,7 @@
+#if defined(_WIN64)
+	#define SDL_MAIN_HANDLED 
+#endif
+
 #include <SDL2/SDL.h>
 
 #include "Game.hpp"
