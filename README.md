@@ -30,7 +30,6 @@ sudo apt-get install libsdl2-dev libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf
 #### Using g++:
 ```bash
 g++ -std=c++23 src/*.cpp -o bin/Cardboard-Pirates -O2 -I include -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -ldl && cd bin
-
 ./Cardboard-Pirates
 ```
 ---
