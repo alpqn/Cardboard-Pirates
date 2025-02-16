@@ -11,14 +11,14 @@ Collider::Collider(float x, float y, float w, float h, float angle)
 }
 
 
-void Collider::thrustForward()
+void Collider::thrustForward() noexcept
 {
     m_center.x += sinf(m_angle / 180.0f * g::PI) * g::thrustMultiplier;
     m_center.y -= cosf(m_angle / 180.0f * g::PI) * g::thrustMultiplier;
     update();
 }
 
-void Collider::update()
+void Collider::update() noexcept
 {
     for(size_t i{ 0 }; i < 4; ++i)
     	m_transformed[i] =
@@ -29,7 +29,7 @@ void Collider::update()
 }
 
 // SAT collision detection.
-bool Collider::isColliding(const Collider& target) const
+bool Collider::isColliding(const Collider& target) const noexcept
 {
     const Collider* c1{ &target };
     const Collider* c2{ this };
@@ -70,7 +70,7 @@ bool Collider::isColliding(const Collider& target) const
 }
 
 // SAT collision detection.
-bool Collider::checkCollisionAndResolve(Collider& target)
+bool Collider::checkCollisionAndResolve(Collider& target) noexcept
 {
     const Collider* c1{ &target };
     const Collider* c2{ this };
@@ -124,7 +124,7 @@ bool Collider::checkCollisionAndResolve(Collider& target)
 }
 
 // SAT collision detection.
-bool Collider::checkCollisionAndResolve(const Collider& target)
+bool Collider::checkCollisionAndResolve(const Collider& target) noexcept
 {
     const Collider* c1{ &target };
     const Collider* c2{ this };

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cmath>
-#include <format>
 
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
@@ -17,18 +16,17 @@ namespace g
     SDL_Renderer* renderer{ nullptr };
 }
 
-Game::Game(const std::string& title, int x, int y, int w, int h)
-:m_wWidth{ w }, m_wHeight{ h }
+Game::Game(const std::string& title, int x, int y)
 {
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) { std::cerr << "ERROR:" << SDL_GetError(); exit(1); }
-    if(TTF_Init() < 0) { std::cerr << "ERROR:" << TTF_GetError(); exit(1); }
-    if((IMG_Init(IMG_INIT_PNG)) != IMG_INIT_PNG) { std::cerr << "ERROR: " << IMG_GetError(); exit(1); }
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) { std::cerr << "ERROR:" << SDL_GetError(); stop(); }
+    if(TTF_Init() < 0) { std::cerr << "ERROR:" << TTF_GetError(); stop(); }
+    if((IMG_Init(IMG_INIT_PNG)) != IMG_INIT_PNG) { std::cerr << "ERROR: " << IMG_GetError(); stop(); }
     if((Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3) || (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0))
     {
         std::cerr << "ERROR: " << Mix_GetError();
-        exit(1);
+        stop();
     }
-    m_window = SDL_CreateWindow(title.c_str(), x, y,  m_wWidth,  m_wHeight, SDL_WINDOW_SHOWN);
+    m_window = SDL_CreateWindow(title.c_str(), x, y,  g::windowW, g::windowH, SDL_WINDOW_SHOWN);
     SDL_SetWindowMinimumSize(m_window, 1280, 768);
     SDL_SetWindowMaximumSize(m_window, 1280, 768);
 
@@ -46,9 +44,9 @@ Game::~Game()
     SDL_Quit();
 }
 
-std::vector<Texture> initializeWaterBackground()
+static constexpr const std::vector<Texture>& initializeWaterBackground() noexcept
 {
-    std::vector<Texture> water;
+    static std::vector<Texture> water;
     water.push_back({ 640.0f, 384.0f, 1280.0f, 768.0f, 0, "water1.png" });
     water.push_back({ -640.0f, 384.0f, 1280.0f, 768.0f, 0, "water1.png" });
     water.push_back({ 640.0f, 384.0f, 1280.0f, 768.0f, 0, "water2.png" });
@@ -61,7 +59,7 @@ std::vector<Texture> initializeWaterBackground()
     return water;
 }
 
-void updateWaterBackground(std::vector<Texture>& water)
+static constexpr void updateWaterBackground(std::vector<Texture>& water) noexcept
 {
     // index 0 and 1 -> x axis
     // index 2 and 3 -> y axis
@@ -76,22 +74,17 @@ void updateWaterBackground(std::vector<Texture>& water)
     for(const auto& t : water) { t.render(); }
 }
 
-void Game::run()
+void Game::run() noexcept
 {
+    TTF_Font* aurulentMono{ ResourceMgr::getMgr().getFont(g::fontsDirectory + "AurulentSansMNerdFontMono-Regular.otf", 40) };
+    Ship::setFontUI(aurulentMono);
     Ship red{ Ship::Color::RED, 64.0f, 384.0f, 0.0f };
     Ship blue{ Ship::Color::BLUE, 1216.0f, 384.0f, 0.0f };
     std::vector<Texture> water{ initializeWaterBackground() };
     Map map{ "map1.txt" };
-    TTF_Font* aurulentMono{ ResourceMgr::getMgr().getFont(g::fontsDirectory + "AurulentSansMNerdFontMono-Regular.otf", 40) };
     Texture quitButton{ 640.0f, 628.0f, 110.0f, 56.0f, 0.0f, "quitButton.png" };
-    Texture shield1{ 52.0f, 32.0f, 32.0f, 32.0f, 0.0f, "shield.png" };
-    Texture shield2{ 1228.0f, 32.0f, 32.0f, 32.0f, 0.0f, "shield.png" };
-    Texture redHealth{ 100.0f, 32.0f, 50.0f, 40.0f, 0.0f };
-    Texture blueHealth{ 1180.0f, 32.0f, 50.0f, 40.0f, 0.0f };
-    Texture redPoints{ 20.0f, 32.0f, 20.0f, 40.0f, 0.0f };
-    Texture bluePoints{ 1260.0f, 32.0f, 20.0f, 40.0f, 0.0f };
-    Sound uiClickSound{ "ui-click.wav" };
-    Sound backgroundMusic{ "background.mp3", true };
+    SoundEffect uiClickSound{ "ui-click.wav" };
+    Music backgroundMusic{ "background.mp3"};
     Mix_MasterVolume(40);
     Mix_VolumeMusic(40);
     {
@@ -99,8 +92,8 @@ void Game::run()
         Texture playButton{ 640.0f, 544.5f, 150.0f, 69.0f, 0.0f, "playButton.png" };
         Texture sfxButton{ 138.0f, 719.5f, 66.0f, 89.0f, 0.0f, "sfxon.png" };
         Texture musicButton{ 42.0f, 719.5f, 74.0f, 89.0f, 0.0f, "musicon.png" };
-        Sound menuMusic{ "menu.mp3", true };
-        menuMusic.playMusic();
+        Music menuMusic{ "menu.mp3" };
+        menuMusic.play();
         bool inMenu{ true };
         while(inMenu)
         {
@@ -109,12 +102,12 @@ void Game::run()
             {
                 const Uint8* state{ SDL_GetKeyboardState(NULL) };
                 if(state[SDL_SCANCODE_RETURN]) { uiClickSound.play(); inMenu = false; }
-                if(state[SDL_SCANCODE_ESCAPE]) { uiClickSound.play(); SDL_Delay(120); exit(1); }
+                if(state[SDL_SCANCODE_ESCAPE]) { uiClickSound.play(); SDL_Delay(120); stop(); }
                 if(event.type == SDL_QUIT) { inMenu = false; stop(); }
                 if(event.type == SDL_MOUSEBUTTONUP)
                 {
                     if(playButton.isClicked()) { uiClickSound.play(); inMenu = false; }
-                    else if(quitButton.isClicked()) { uiClickSound.play(); SDL_Delay(120); exit(1); }
+                    else if(quitButton.isClicked()) { uiClickSound.play(); SDL_Delay(120); stop(); }
                     else if(musicButton.isClicked())
                     {
                         musicOn = !musicOn;
@@ -148,26 +141,21 @@ void Game::run()
     }
 
     Mix_HaltMusic();
-    if(musicOn){ backgroundMusic.fadeInMusic(250); }
+    if(musicOn){ backgroundMusic.fadeIn(250); }
     SDL_ShowCursor(0);
-
     int round{ 1 };
     while(m_running)
     {
         red.reset(); blue.reset();
-        redPoints.getTextureFromFont(aurulentMono, std::to_string(red.getPoints()), {255,0,0});
-        bluePoints.getTextureFromFont(aurulentMono, std::to_string(blue.getPoints()), {0,0,255});
+        Ship::setRenderUI(true);
 
-        while(red.getHealth() > 0 && blue.getHealth() > 0)
+        while(red.isAlive() && blue.isAlive())
         {
             SDL_Event event;
-            while(SDL_PollEvent(&event)) { if(event.type == SDL_QUIT) exit(1); }
+            while(SDL_PollEvent(&event)) { if(event.type == SDL_QUIT) stop(); }
 
             red.input(SDL_SCANCODE_W, SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_S);
             blue.input(SDL_SCANCODE_UP, SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SDL_SCANCODE_DOWN);
-
-            redHealth.getTextureFromFont(aurulentMono, std::format("{:<3}", std::to_string(red.getHealth())), {255,0,0});
-            blueHealth.getTextureFromFont(aurulentMono, std::format("{:>3}", std::to_string(blue.getHealth())), {0,0,255});
 
             Ship::checkCollisionAndUpdate(red, blue);
             blue.checkBoundriesAndUpdate(map);
@@ -178,34 +166,29 @@ void Game::run()
             map.render();
             red.render();
             blue.render();
-            shield1.render();
-            shield2.render();
-            redHealth.render();
-            blueHealth.render();
-            redPoints.render();
-            bluePoints.render();
             SDL_RenderPresent(g::renderer);
 
             SDL_Delay(16); // Max frame rate (60 FPS)
         }
 
         // Determine who won.
-        red.getHealth() > blue.getHealth() ? red.setPoints(red.getPoints() + 1) : blue.setPoints(blue.getPoints() + 1);
-        static Sound pointSound{ "point-round.wav" }; pointSound.play();
+        red.isAlive() ? red.setPoints(red.getPoints() + 1) : blue.setPoints(blue.getPoints() + 1);
+        static SoundEffect pointSound{ "point-round.wav" }; pointSound.play();
         ++round;
 
         // If the point difference is 2 (best of 3) or the 3rd round is over.
         if(round > 3 || abs(red.getPoints() - blue.getPoints()) == 2)
         {
             // Display who won. Restart or quit.
-            Sound win{ "win-sequence.wav" }; win.play(7);
-            Ship& winner{ red.getPoints() > blue.getPoints() ? red : blue };
+            static SoundEffect win{ "win-sequence.wav" }; win.play(7);
+            Ship& winner{ red.isAlive() ? red : blue };
             Texture restartButton{ 639.5f, 544.5f, 245.0f, 69.0f, 0.0f, "restartButton.png" };
             Texture winnerDisplay{ 640.0f, 384.0f, 200.0f, 50.0f, 0.0f };
             winner.setPos(640.0f, 284.0f);
             winnerDisplay.getTextureFromFont(aurulentMono, winner.getColorAsString() + " WON!", winner.getColorAsRGB());
             bool inEndGame{ true };
             SDL_ShowCursor(1);
+            Ship::setRenderUI(false);
 
             while(inEndGame)
             {
@@ -219,19 +202,21 @@ void Game::run()
                         red.setPoints(0); blue.setPoints(0);
                         inEndGame = false;
                         SDL_ShowCursor(0);
+                        Ship::setRenderUI(true);
                         uiClickSound.play();
                     }
-                    if(state[SDL_SCANCODE_ESCAPE]) { uiClickSound.play(); SDL_Delay(120); exit(1); }
-                    if(event.type == SDL_QUIT) { exit(1); }
+                    if(state[SDL_SCANCODE_ESCAPE]) { uiClickSound.play(); SDL_Delay(120); stop(); }
+                    if(event.type == SDL_QUIT) { stop(); }
                     if(event.type == SDL_MOUSEBUTTONUP)
                     {
-                        if(quitButton.isClicked()) { uiClickSound.play(); SDL_Delay(120); exit(1); }
+                        if(quitButton.isClicked()) { uiClickSound.play(); SDL_Delay(120); stop(); }
                         else if(restartButton.isClicked())
                         {
                             round = 1;
                             red.setPoints(0); blue.setPoints(0);
                             inEndGame = false;
                             SDL_ShowCursor(0);
+                            Ship::setRenderUI(true);
                             uiClickSound.play();
                         }
                     }

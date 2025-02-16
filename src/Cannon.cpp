@@ -14,7 +14,7 @@ Cannon::Cannon(float x, float y, float angle)
     m_explosion.setScale(40.0f, 40.0f);
 }
 
-void Cannon::render()
+void Cannon::render() noexcept
 {
     // If there is an explosion animation timer.
     if(m_sinceExplosion) { m_explosion.render(); }
@@ -26,13 +26,13 @@ void Cannon::render()
     }
 }
 
-bool Cannon::isColliding(const Collider& target)
+bool Cannon::isColliding(const Collider& target) noexcept
 {
     if(m_collider.isColliding(target))
     {
         m_explosion.setPos(getX(), getY());
         setX(-INFINITY); setY(-INFINITY); // Quasi destroy the cannon.
-        static Sound explosionSound{ "explosion.wav" };
+        static SoundEffect explosionSound{ "explosion.wav" };
         explosionSound.play();
         m_sinceExplosion = SDL_GetTicks();
         return true;
@@ -40,7 +40,7 @@ bool Cannon::isColliding(const Collider& target)
     return false;
 }
 
-bool Cannon::isExploding() const
+bool Cannon::isExploding() const noexcept
 {
     if(!m_sinceExplosion) return false;
     else if(SDL_GetTicks() - m_sinceExplosion < 250) return true;

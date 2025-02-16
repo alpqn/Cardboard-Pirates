@@ -1,26 +1,49 @@
 #include <algorithm>
+#include <format>
 
 #include "Ship.hpp"
 #include "Cannon.hpp"
 #include "Sound.hpp"
 #include "GameUtils.hpp"
 
+bool Ship::m_renderUI{ false };
+TTF_Font* Ship::m_fontUI{ nullptr };
+
 Ship::Ship(Color color, float x, float y, float angle)
 :m_color{ color }
 ,Texture{ x, y, 66.0f, 113.0f, angle }
 ,m_collider{ x, y, 52.0f, 100.0f, angle }
+,m_healthUI{ 0.0f, 0.0f, 50.0f, 40.0f, 0.0f }
+,m_pointsUI{ 0.0f, 0.0f, 20.0f, 40.0f, 0.0f }
+,m_shieldUI{ 0.0f, 0.0f, 32.0f, 32.0f, 0.0f, "shield.png" }
 {
+    switch(color)
+    {
+        case Color::RED :
+            m_healthUI.setPos(100.0f, 32.0f);
+            m_pointsUI.setPos(20.0f, 32.0f);
+            m_shieldUI.setPos(52.0f, 32.0f);
+            break;
+        case Color::BLUE :
+            m_healthUI.setPos(g::windowW - 100.0f, 32.0f);
+            m_pointsUI.setPos(g::windowW - 20.0f, 32.0f);
+            m_shieldUI.setPos(g::windowW - 52.0f, 32.0f);
+            break;
+    }
+
+    m_healthUI.getTextureFromFont(m_fontUI, std::format("{:<3}", std::to_string(getHealth())), getColorAsRGB());
+    m_pointsUI.getTextureFromFont(m_fontUI, std::to_string(getPoints()), getColorAsRGB());
     changeTexture("ship" + getColorAsString() + "1.png");
 }
 
-void Ship::render()
+void Ship::render() noexcept
 {
     // Remove cannons that are out of bounds or/and destroyed
     if(m_cannons.size())
     {
         auto f = std::remove_if
         (
-            m_cannons.begin(), m_cannons.end(), [&](Cannon c)
+            m_cannons.begin(), m_cannons.end(), [](const Cannon& c)
             {
                 return !c.isExploding() && (c.getX() < 1 || c.getY() < 1 || c.getX() >= g::windowW || c.getY() >= g::windowH);
             }
@@ -36,9 +59,10 @@ void Ship::render()
     {
         Texture::render();
     }
+    if(m_renderUI) { m_healthUI.render(); m_pointsUI.render(); m_shieldUI.render(); }
 }
 
-void Ship::input(SDL_Scancode thrust, SDL_Scancode left, SDL_Scancode right, SDL_Scancode shoot)
+void Ship::input(SDL_Scancode thrust, SDL_Scancode left, SDL_Scancode right, SDL_Scancode shoot) noexcept
 {
     const Uint8* state{ SDL_GetKeyboardState(NULL) };
     if(state[thrust]) { thrustForward(); m_collider.thrustForward();  }
@@ -47,7 +71,7 @@ void Ship::input(SDL_Scancode thrust, SDL_Scancode left, SDL_Scancode right, SDL
     if(state[shoot]) { shootForward(); }
 }
 
-const std::string Ship::getColorAsString() const
+const std::string Ship::getColorAsString() const noexcept
 {
     switch(m_color)
     {
@@ -57,18 +81,18 @@ const std::string Ship::getColorAsString() const
     return "";
 }
 
-void Ship::shootForward()
+void Ship::shootForward() noexcept
 {
     // 0.5 seconds cooldown
     if(SDL_GetTicks() - m_shootCooldown > 500)
     {
         m_cannons.push_back({ getX(), getY(), m_angle });
-        static Sound shootingSound{ "fire.wav" }; shootingSound.play();
+        static SoundEffect shootingSound{ "fire.wav" }; shootingSound.play();
         m_shootCooldown = SDL_GetTicks();
     }
 }
 
-void Ship::checkBoundriesAndUpdate(const Map& map)
+void Ship::checkBoundriesAndUpdate(const Map& map) noexcept
 {
     for(const auto& c : m_collider.getTransformed())
     {
@@ -87,7 +111,7 @@ void Ship::checkBoundriesAndUpdate(const Map& map)
 }
 
 
-void Ship::checkCollisionAndUpdate(Ship& ship1, Ship& ship2)
+void Ship::checkCollisionAndUpdate(Ship& ship1, Ship& ship2) noexcept
 {
     for(auto& c : ship1.m_cannons) if(c.isColliding(ship2.m_collider)) ship2.setHealth(ship2.getHealth() - g::cannonDamage);
     for(auto& c : ship2.m_cannons) if(c.isColliding(ship1.m_collider)) ship1.setHealth(ship1.getHealth() - g::cannonDamage);
@@ -95,7 +119,7 @@ void Ship::checkCollisionAndUpdate(Ship& ship1, Ship& ship2)
 
     if(ship1.m_collider.checkCollisionAndResolve(ship2.m_collider) && SDL_GetTicks() - sinceLastCollision > 200)
     {
-        static Sound collisionSound{ "ship-collision.wav" }; collisionSound.play();
+        static SoundEffect collisionSound{ "ship-collision.wav" }; collisionSound.play();
         ship1.setHealth(ship1.getHealth() - 1);
         ship2.setHealth(ship2.getHealth() - 1);
 
@@ -109,7 +133,7 @@ void Ship::checkCollisionAndUpdate(Ship& ship1, Ship& ship2)
     }
 }
 
-void Ship::reset()
+void Ship::reset() noexcept
 {
     if(getColorAsString() == "BLUE") { setPos(1216.0f, 384.0f); }
     else if(getColorAsString() == "RED") { setPos(64.0f, 384.0f); }
@@ -118,10 +142,22 @@ void Ship::reset()
     m_cannons.clear();
 }
 
-const SDL_Color Ship::getColorAsRGB() const
+const SDL_Color Ship::getColorAsRGB() const noexcept
 {
     if(getColorAsString() == "BLUE") return { 0, 0, 255 };
     else if(getColorAsString() == "RED") return { 255, 0, 0 };
 
     return { 0, 0, 0 };
+}
+
+void Ship::setHealth(int health) noexcept
+{
+    m_health = health;
+    m_healthUI.getTextureFromFont(m_fontUI, std::format("{:<3}", std::to_string(getHealth())), getColorAsRGB());
+}
+
+void Ship::setPoints(int points) noexcept
+{
+    m_points = points;
+    m_pointsUI.getTextureFromFont(m_fontUI, std::to_string(getPoints()), getColorAsRGB());
 }

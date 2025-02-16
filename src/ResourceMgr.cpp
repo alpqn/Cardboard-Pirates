@@ -5,13 +5,13 @@
 #include "ResourceMgr.hpp"
 #include "GameUtils.hpp"
 
-ResourceMgr& ResourceMgr::getMgr()
+ResourceMgr& ResourceMgr::getMgr() noexcept
 {
     static ResourceMgr s_mgr;
     return s_mgr;
 }
 
-SDL_Texture* ResourceMgr::getTexture(const std::string& file)
+SDL_Texture* ResourceMgr::getTexture(const std::string& file) noexcept
 {
     auto search = m_textureDatabase.find(file);
     if(search != m_textureDatabase.end()) { return search->second; }
@@ -24,7 +24,7 @@ SDL_Texture* ResourceMgr::getTexture(const std::string& file)
     }
 }
 
-TTF_Font* ResourceMgr::getFont(const std::string& file, int ptsize)
+TTF_Font* ResourceMgr::getFont(const std::string& file, int ptsize) noexcept
 {
     auto search = m_fontDatabase.find(file);
     if(search != m_fontDatabase.end()) { return search->second; }
@@ -37,7 +37,7 @@ TTF_Font* ResourceMgr::getFont(const std::string& file, int ptsize)
     }
 }
 
-Mix_Chunk* ResourceMgr::getSound(const std::string& file)
+Mix_Chunk* ResourceMgr::getSound(const std::string& file) noexcept
 {
     auto search = m_soundDatabase.find(file);
     if(search != m_soundDatabase.end()) { return search->second; }

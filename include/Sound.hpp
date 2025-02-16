@@ -4,21 +4,31 @@
 
 #include <SDL2/SDL_mixer.h>
 
-class Sound
+// SDL_mixer has two separate data structures for audio data. One called a "chunk", which is meant to be a file completely decoded into memory
+// up front, and the other called "music" which is a file intended to be decoded on demand.
+
+class SoundEffect
 {
-private:
-    Mix_Music* m_music{};
-    Mix_Chunk* m_chunk{};
-    // SDL_mixer has two separate data structures for audio data. One called a "chunk", which is meant to be a file completely decoded into memory
-    // up front, and the other called "music" which is a file intended to be decoded on demand.
-    bool m_isMusic;
 public:
-    Sound(const std::string& file, bool isMusic = false);
-    ~Sound();
-    void playMusic(int repeats = -1) const { Mix_PlayMusic(m_music, repeats); }
-    void pauseMusic() const { Mix_PauseMusic(); }
-    void resumeMusic() const { Mix_ResumeMusic(); }
-    void fadeInMusic(int ms, int repeats = -1) const { Mix_FadeInMusic(m_music, repeats, ms); }
-    void fadeOutMusic(int ms) const { Mix_FadeOutMusic(ms); }
-    void play(int channel = -1, int repeats = 0) const { Mix_PlayChannel(channel, m_chunk, repeats); }
+    explicit SoundEffect(const std::string& file);
+    ~SoundEffect();
+
+    constexpr void play(int channel = -1, int repeats = 0) const noexcept { Mix_PlayChannel(channel, m_chunk, repeats); }
+private:
+    Mix_Chunk* m_chunk;
+};
+
+class Music
+{
+public:
+    explicit Music(const std::string& file);
+    ~Music();
+
+    constexpr void play(int repeats = -1) const noexcept { Mix_PlayMusic(m_music, repeats); }
+    constexpr void pause() const noexcept { Mix_PauseMusic(); }
+    constexpr void resume() const noexcept { Mix_ResumeMusic(); }
+    constexpr void fadeIn(int ms, int repeats = -1) const noexcept { Mix_FadeInMusic(m_music, repeats, ms); }
+    constexpr void fadeOut(int ms) const noexcept { Mix_FadeOutMusic(ms); }
+private:
+    Mix_Music* m_music;
 };

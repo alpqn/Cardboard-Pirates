@@ -9,6 +9,11 @@
 
 class ResourceMgr
 {
+public:
+    static ResourceMgr& getMgr() noexcept;
+    SDL_Texture* getTexture(const std::string& file) noexcept;
+    TTF_Font* getFont(const std::string& file, int ptsize) noexcept;
+    Mix_Chunk* getSound(const std::string& file) noexcept;
 private:
     std::unordered_map<std::string, SDL_Texture*> m_textureDatabase;
     std::unordered_map<std::string, TTF_Font*> m_fontDatabase;
@@ -17,9 +22,4 @@ private:
     ResourceMgr() {}
     ResourceMgr(const ResourceMgr&) = delete;
     ResourceMgr& operator=(const ResourceMgr&) = delete;
-public:
-    static ResourceMgr& getMgr();
-    SDL_Texture* getTexture(const std::string& file);
-    TTF_Font* getFont(const std::string& file, int ptsize);
-    Mix_Chunk* getSound(const std::string& file);
 };

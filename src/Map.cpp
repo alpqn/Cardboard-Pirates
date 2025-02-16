@@ -8,7 +8,7 @@ Map::Map(const std::string& file)
     loadMapFromFile(file);
 }
 
-void Map::loadMapFromFile(const std::string& file)
+void Map::loadMapFromFile(const std::string& file) noexcept
 {
     m_colliders.clear();
     m_tiles.clear();
@@ -44,7 +44,7 @@ void Map::loadMapFromFile(const std::string& file)
     for(auto& c: m_colliders) { c.update(); }
 }
 
-void Map::render() const
+void Map::render() const noexcept
 {
     for(const auto& t: m_tiles) { t.render(); }
 }

@@ -4,17 +4,23 @@
 #include "GameUtils.hpp"
 #include "ResourceMgr.hpp"
 
-Sound::Sound(const std::string& file, bool isMusic)
+SoundEffect::SoundEffect(const std::string& file)
 {
-    if(!isMusic) { m_chunk = ResourceMgr::getMgr().getSound((g::soundsDirectory + file).c_str()); }
-    else{ m_music = Mix_LoadMUS((g::soundsDirectory + file).c_str()); if(!m_music) { std::cerr << "ERROR: "<< file << Mix_GetError(); exit(1); }}
+    m_chunk = ResourceMgr::getMgr().getSound((g::soundsDirectory + file).c_str());
 }
 
-Sound::~Sound()
+SoundEffect::~SoundEffect()
 {
-    // Avoid double-deleting.
-    m_chunk = nullptr;
-    m_music = nullptr;
     Mix_FreeChunk(m_chunk);
+}
+
+Music::Music(const std::string& file)
+{
+    m_music = Mix_LoadMUS((g::soundsDirectory + file).c_str());
+    if(!m_music) { std::cerr << "ERROR: "<< file << Mix_GetError(); exit(1); }
+}
+
+Music::~Music()
+{
     Mix_FreeMusic(m_music);
 }
