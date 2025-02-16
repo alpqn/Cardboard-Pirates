@@ -18,6 +18,7 @@ private:
     Mix_Chunk* m_chunk;
 };
 
+
 class Music
 {
 public:

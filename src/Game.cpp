@@ -167,7 +167,6 @@ void Game::run() noexcept
             red.render();
             blue.render();
             SDL_RenderPresent(g::renderer);
-
             SDL_Delay(16); // Max frame rate (60 FPS)
         }
 

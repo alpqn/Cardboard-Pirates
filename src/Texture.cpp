@@ -29,7 +29,6 @@ void Texture::render() const noexcept
     SDL_RenderCopyExF(g::renderer, m_texture, NULL, &m_rect, m_angle, NULL, SDL_FLIP_NONE);
 }
 
-
 void Texture::changeTexture(const std::string& file) noexcept
 {
     m_texture = ResourceMgr::getMgr().getTexture(g::imagesDirectory + file);

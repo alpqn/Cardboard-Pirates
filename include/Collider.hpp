@@ -16,10 +16,8 @@ public:
    constexpr void rotateRight() noexcept { m_angle += g::rotationMultiplier; update(); }
    void update() noexcept;
    bool isColliding(const Collider& target) const noexcept;
-   // Only the caller is affected by the collision resolution
-   bool checkCollisionAndResolve(const Collider& target) noexcept;
-   // Both the caller and the target are affected by the collision resolution
-   bool checkCollisionAndResolve(Collider& target) noexcept;
+   bool checkCollisionAndResolve(const Collider& target) noexcept; // Only the caller is affected by the collision resolution
+   bool checkCollisionAndResolve(Collider& target) noexcept;       // Both the caller and the target are affected by the collision resolution
 
    constexpr float getX() const noexcept { return m_center.x; }
    constexpr float getY() const noexcept { return m_center.y; }

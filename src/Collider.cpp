@@ -10,7 +10,6 @@ Collider::Collider(float x, float y, float w, float h, float angle)
     update();
 }
 
-
 void Collider::thrustForward() noexcept
 {
     m_center.x += sinf(m_angle / 180.0f * g::PI) * g::thrustMultiplier;
