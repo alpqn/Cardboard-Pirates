@@ -44,13 +44,15 @@ Game::~Game()
     SDL_Quit();
 }
 
-static constexpr const std::vector<Texture>& initializeWaterBackground() noexcept
+static constexpr const std::array<Texture, 4> initializeWaterBackground() noexcept
 {
-    static std::vector<Texture> water;
-    water.push_back({ 640.0f, 384.0f, 1280.0f, 768.0f, 0, "water1.png" });
-    water.push_back({ -640.0f, 384.0f, 1280.0f, 768.0f, 0, "water1.png" });
-    water.push_back({ 640.0f, 384.0f, 1280.0f, 768.0f, 0, "water2.png" });
-    water.push_back({ 640.0f, -384.0f, 1280.0f, 768.0f, 0, "water2.png" });
+    static std::array<Texture, 4> water
+    {
+        Texture{ 640.0f, 384.0f, 1280.0f, 768.0f, 0, "water1.png" },
+        Texture{ -640.0f, 384.0f, 1280.0f, 768.0f, 0, "water1.png" },
+        Texture{ 640.0f, 384.0f, 1280.0f, 768.0f, 0, "water2.png" },
+        Texture{ 640.0f, -384.0f, 1280.0f, 768.0f, 0, "water2.png" },
+    };
     SDL_SetTextureBlendMode(water[0].getTexture(), SDL_BLENDMODE_NONE);
     SDL_SetTextureBlendMode(water[1].getTexture(), SDL_BLENDMODE_NONE);
     SDL_SetTextureBlendMode(water[2].getTexture(), SDL_BLENDMODE_MOD);
@@ -59,7 +61,7 @@ static constexpr const std::vector<Texture>& initializeWaterBackground() noexcep
     return water;
 }
 
-static constexpr void updateWaterBackground(std::vector<Texture>& water) noexcept
+static constexpr void updateWaterBackground(std::array<Texture, 4>& water) noexcept
 {
     // index 0 and 1 -> x axis
     // index 2 and 3 -> y axis
@@ -80,7 +82,7 @@ void Game::run() noexcept
     Ship::setFontUI(aurulentMono);
     Ship red{ Ship::Color::RED, 64.0f, 384.0f, 0.0f };
     Ship blue{ Ship::Color::BLUE, 1216.0f, 384.0f, 0.0f };
-    std::vector<Texture> water{ initializeWaterBackground() };
+    std::array<Texture, 4> water{ initializeWaterBackground() };
     Map map{ "map1.txt" };
     Texture quitButton{ 640.0f, 628.0f, 110.0f, 56.0f, 0.0f, "quitButton.png" };
     SoundEffect uiClickSound{ "ui-click.wav" };

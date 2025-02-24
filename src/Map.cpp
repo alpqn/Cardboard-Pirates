@@ -22,22 +22,22 @@ void Map::loadMapFromFile(const std::string& file) noexcept
     std::string str;
     while(std::getline(f, str)) ids.push_back(str);
 
-    for(size_t i{ 0 }; i < ids.size(); ++i)
+    for(size_t row{ 0 }; row < ids.size(); ++row)
     {
-        for(size_t j{ 1 }; j < ids[i].size(); j += 2)
+        for(size_t col{ 1 }; col < ids[row].size(); col += 2)
         {
-            std::string id{ concat(ids[i][j - 1], ids[i][j]) };
+            std::string id{ concat(ids[row][col - 1], ids[row][col]) };
             if(id == "00") continue;
             else
             {
                 bool collision{ false };
-                if(i > 0) { if(concat(ids[i - 1][j - 1], ids[i - 1][j]) == "00") collision = true; }
-                if(!collision && i < mapH - 1) { if(concat(ids[i + 1][j - 1], ids[i + 1][j]) == "00") collision = true; }
-                if(!collision && j > 2) { if(concat(ids[i][j - 3], ids[i][j - 2]) == "00") collision = true; }
-                if(!collision && j/2 < mapW - 2) { if(concat(ids[i][j + 1], ids[i][j + 2]) == "00") collision = true;}
+                if(row > 0 && concat(ids[row - 1][col - 1], ids[row - 1][col]) == "00") collision = true;
+                else if(row < mapH - 1 && concat(ids[row + 1][col - 1], ids[row + 1][col]) == "00") collision = true;
+                else if(col > 2 && concat(ids[row][col - 3], ids[row][col - 2]) == "00")  collision = true;
+                else if(col/2 < mapW - 2 && concat(ids[row][col + 1], ids[row][col + 2]) == "00") collision = true;
 
-                m_tiles.push_back({ j/2 * g::tileW + g::tileW/2, i * g::tileH + g::tileH/2, id });
-                if(collision) m_colliders.push_back({ j/2 * g::tileW + g::tileW/2, i * g::tileH + g::tileH/2, g::tileW, g::tileW, 0.0f });
+                m_tiles.emplace_back(Tile{ col/2 * g::tileW + g::tileW/2, row * g::tileH + g::tileH/2, id });
+                if(collision) m_colliders.emplace_back(Collider{ col/2 * g::tileW + g::tileW/2, row * g::tileH + g::tileH/2, g::tileW, g::tileW, 0.0f });
             }
         }
     }
