@@ -16,7 +16,7 @@
 ```bash
 sudo pacman -S sdl2 sdl2_mixer sdl2_image sdl2_ttf
 ```
-#### Using g++:
+#### Using gcc:
 ```bash
 g++ -std=c++23 src/*.cpp -o bin/Cardboard-Pirates -O2 -I include -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -ldl && cd bin
 ./Cardboard-Pirates
@@ -27,7 +27,7 @@ g++ -std=c++23 src/*.cpp -o bin/Cardboard-Pirates -O2 -I include -lSDL2 -lSDL2_i
 ```bash
 sudo apt-get install libsdl2-dev libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf-dev
 ```
-#### Using g++:
+#### Using gcc:
 ```bash
 g++ -std=c++23 src/*.cpp -o bin/Cardboard-Pirates -O2 -I include -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -ldl && cd bin
 ./Cardboard-Pirates
@@ -38,7 +38,7 @@ g++ -std=c++23 src/*.cpp -o bin/Cardboard-Pirates -O2 -I include -lSDL2 -lSDL2_i
 ```bash
 sudo emerge media-libs/libsdl2 media-libs/libsdl2_mixer media-libs/libsdl2_image media-libs/libsdl2_ttf
 ```
-#### Using g++:
+#### Using gcc:
 ```bash
 g++ -std=c++23 src/*.cpp -o bin/Cardboard-Pirates -O2 -I include -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -ldl && cd bin
 ./Cardboard-Pirates
