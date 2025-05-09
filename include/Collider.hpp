@@ -22,11 +22,11 @@ public:
    constexpr float getX() const noexcept { return m_center.x; }
    constexpr float getY() const noexcept { return m_center.y; }
    constexpr float getAngle() const noexcept { return m_angle; }
-   constexpr const std::array<SDL_FPoint, 4> getTransformed() const noexcept { return m_transformed; }
+   constexpr std::array<SDL_FPoint, 4> getTransformed() const noexcept { return m_transformed; }
 
-   constexpr void setX(float x) noexcept { m_center.x = x; update(); }
-   constexpr void setY(float y) noexcept { m_center.y = y; update(); }
-   constexpr void setAngle(float angle) noexcept { m_angle = angle; }
+   constexpr void setX(const float x) noexcept { m_center.x = x; update(); }
+   constexpr void setY(const float y) noexcept { m_center.y = y; update(); }
+   constexpr void setAngle(const float angle) noexcept { m_angle = angle; }
 private:
     float m_angle;
     SDL_FPoint m_center;

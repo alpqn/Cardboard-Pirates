@@ -6,7 +6,7 @@
 
 SoundEffect::SoundEffect(const std::string& file)
 {
-    m_chunk = ResourceMgr::getMgr().getSound((g::soundsDirectory + file).c_str());
+    m_chunk = ResourceMgr::getMgr().getSound(g::soundsDirectory + file);
 }
 
 SoundEffect::~SoundEffect()

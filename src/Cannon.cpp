@@ -4,7 +4,7 @@
 #include "GameUtils.hpp"
 #include "Sound.hpp"
 
-Cannon::Cannon(float x, float y, float angle)
+Cannon::Cannon(const float x, const float y, const float angle)
 :Texture{ x, y, 10.0f, 10.0f, angle, "cannon.png" }
 ,m_dX{ sinf(angle / 180.0f * g::PI) * g::bulletSpeed }
 ,m_dY{ -cosf(angle / 180.0f * g::PI) * g::bulletSpeed }

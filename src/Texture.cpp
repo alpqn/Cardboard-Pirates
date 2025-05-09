@@ -5,7 +5,7 @@
 #include "Texture.hpp"
 #include "ResourceMgr.hpp"
 
-Texture::Texture(float x, float y, float w, float h, float angle, const std::string& file)
+Texture::Texture(const float x, const float y, const float w, const float h, const float angle, const std::string& file)
 :m_rect{ x - w/2, y - h/2, w, h }
 ,m_angle{ angle }
 {
@@ -17,7 +17,7 @@ Texture::Texture(const std::string& file)
     m_texture = ResourceMgr::getMgr().getTexture(g::imagesDirectory + file);
 }
 
-Texture::Texture(float x, float y, float w, float h, float angle)
+Texture::Texture(const float x, const float y, const float w, const float h, const float angle)
 :m_rect{ x - w/2, y - h/2, w, h }
 ,m_angle{ angle }
 {
@@ -34,7 +34,7 @@ void Texture::changeTexture(const std::string& file) noexcept
     m_texture = ResourceMgr::getMgr().getTexture(g::imagesDirectory + file);
 }
 
-void Texture::getTextureFromFont(TTF_Font* font, const std::string& text, SDL_Color color) noexcept
+void Texture::getTextureFromFont(TTF_Font* font, const std::string& text, const SDL_Color& color) noexcept
 {
     SDL_Surface* s{ TTF_RenderText_Solid(font, text.c_str(), color) };
     m_texture = SDL_CreateTextureFromSurface(g::renderer, s);

@@ -16,7 +16,7 @@ namespace g
     SDL_Renderer* renderer{ nullptr };
 }
 
-Game::Game(const std::string& title, int x, int y)
+Game::Game(const std::string& title, const int x, const int y)
 {
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) { std::cerr << "ERROR:" << SDL_GetError(); stop(); }
     if(TTF_Init() < 0) { std::cerr << "ERROR:" << TTF_GetError(); stop(); }
@@ -44,7 +44,7 @@ Game::~Game()
     SDL_Quit();
 }
 
-static constexpr const std::array<Texture, 4> initializeWaterBackground() noexcept
+static constexpr std::array<Texture, 4> initializeWaterBackground() noexcept
 {
     static std::array<Texture, 4> water
     {
@@ -160,8 +160,8 @@ void Game::run() noexcept
             blue.input(SDL_SCANCODE_UP, SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT, SDL_SCANCODE_DOWN);
 
             Ship::checkCollisionAndUpdate(red, blue);
-            blue.checkBoundriesAndUpdate(map);
-            red.checkBoundriesAndUpdate(map);
+            blue.checkBoundariesAndUpdate(map);
+            red.checkBoundariesAndUpdate(map);
 
             SDL_RenderClear(g::renderer);
             updateWaterBackground(water);

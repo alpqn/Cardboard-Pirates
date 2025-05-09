@@ -2,7 +2,7 @@
 
 #include "Collider.hpp"
 
-Collider::Collider(float x, float y, float w, float h, float angle)
+Collider::Collider(const float x, const float y, const float w, const float h, const float angle)
 :m_center{ x, y }
 ,m_model{{ { -w/2, -h/2 }, { w/2, -h/2 }, { w/2, h/2 }, { -w/2, h/2 } }} // Clockwise
 ,m_angle{ angle }

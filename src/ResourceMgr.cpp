@@ -13,8 +13,7 @@ ResourceMgr& ResourceMgr::getMgr() noexcept
 
 SDL_Texture* ResourceMgr::getTexture(const std::string& file) noexcept
 {
-    auto search = m_textureDatabase.find(file);
-    if(search != m_textureDatabase.end()) { return search->second; }
+    if(const auto& search = m_textureDatabase.find(file); search != m_textureDatabase.end()) { return search->second; }
     else
     {
         SDL_Texture* t{ IMG_LoadTexture(g::renderer,file.c_str()) };
@@ -24,10 +23,9 @@ SDL_Texture* ResourceMgr::getTexture(const std::string& file) noexcept
     }
 }
 
-TTF_Font* ResourceMgr::getFont(const std::string& file, int ptsize) noexcept
+TTF_Font* ResourceMgr::getFont(const std::string& file, const int ptsize) noexcept
 {
-    auto search = m_fontDatabase.find(file);
-    if(search != m_fontDatabase.end()) { return search->second; }
+    if(const auto& search = m_fontDatabase.find(file); search != m_fontDatabase.end()) { return search->second; }
     else
     {
         TTF_Font* font{ TTF_OpenFont(file.c_str(), ptsize) };
@@ -39,8 +37,7 @@ TTF_Font* ResourceMgr::getFont(const std::string& file, int ptsize) noexcept
 
 Mix_Chunk* ResourceMgr::getSound(const std::string& file) noexcept
 {
-    auto search = m_soundDatabase.find(file);
-    if(search != m_soundDatabase.end()) { return search->second; }
+    if(const auto& search = m_soundDatabase.find(file); search != m_soundDatabase.end()) { return search->second; }
     else
     {
         Mix_Chunk* sound{ Mix_LoadWAV(file.c_str()) };

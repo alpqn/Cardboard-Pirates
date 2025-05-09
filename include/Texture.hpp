@@ -17,21 +17,20 @@ public:
 
     void render() const noexcept;
     void changeTexture(const std::string& file) noexcept;
-    void getTextureFromFont(TTF_Font* font, const std::string& text, SDL_Color color) noexcept;
+    void getTextureFromFont(TTF_Font* font, const std::string& text, const SDL_Color& color) noexcept;
     void thrustForward() noexcept;
-    bool isColliding(Texture& texture) const noexcept;
     bool isClicked() const noexcept;
     constexpr void rotateLeft() noexcept { m_angle -= g::rotationMultiplier; }
     constexpr void rotateRight() noexcept { m_angle += g::rotationMultiplier; }
 
-    constexpr void setAttrib(float x, float y, float w, float h) noexcept { setPos(x, y); setScale(w, h); }
-    constexpr void setPos(float x, float y) noexcept { setX(x); setY(y); }
-    constexpr void setScale(float w, float h) noexcept { setW(w), setH(h); }
-    constexpr void setX(float x) noexcept { m_rect.x = x - m_rect.w/2; }
-    constexpr void setY(float y) noexcept { m_rect.y = y - m_rect.h/2; }
-    constexpr void setW(float w) noexcept { m_rect.w = w; }
-    constexpr void setH(float h) noexcept { m_rect.h = h; }
-    constexpr void setAngle(float angle) noexcept { m_angle = angle; }
+    constexpr void setAttrib(const float x, const float y, const float w, const float h) noexcept { setPos(x, y); setScale(w, h); }
+    constexpr void setPos(const float x, const float y) noexcept { setX(x); setY(y); }
+    constexpr void setScale(const float w, const float h) noexcept { setW(w), setH(h); }
+    constexpr void setX(const float x) noexcept { m_rect.x = x - m_rect.w/2; }
+    constexpr void setY(const float y) noexcept { m_rect.y = y - m_rect.h/2; }
+    constexpr void setW(const float w) noexcept { m_rect.w = w; }
+    constexpr void setH(const float h) noexcept { m_rect.h = h; }
+    constexpr void setAngle(const float angle) noexcept { m_angle = angle; }
 
     constexpr float getX() const noexcept { return m_rect.x + m_rect.w/2; }
     constexpr float getY() const noexcept { return m_rect.y + m_rect.h/2; }

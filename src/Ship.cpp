@@ -9,7 +9,7 @@
 bool Ship::m_renderUI{ false };
 TTF_Font* Ship::m_fontUI{ nullptr };
 
-Ship::Ship(Color color, float x, float y, float angle)
+Ship::Ship(const Color& color, const float x, const float y, const float angle)
 :m_color{ color }
 ,Texture{ x, y, 66.0f, 113.0f, angle }
 ,m_collider{ x, y, 52.0f, 100.0f, angle }
@@ -62,7 +62,7 @@ void Ship::render() noexcept
     if(m_renderUI) { m_healthUI.render(); m_pointsUI.render(); m_shieldUI.render(); }
 }
 
-void Ship::input(SDL_Scancode thrust, SDL_Scancode left, SDL_Scancode right, SDL_Scancode shoot) noexcept
+void Ship::input(const SDL_Scancode& thrust, const SDL_Scancode& left, const SDL_Scancode& right, const SDL_Scancode& shoot) noexcept
 {
     const Uint8* state{ SDL_GetKeyboardState(NULL) };
     if(state[thrust]) { thrustForward(); m_collider.thrustForward();  }
@@ -71,7 +71,7 @@ void Ship::input(SDL_Scancode thrust, SDL_Scancode left, SDL_Scancode right, SDL
     if(state[shoot]) { shootForward(); }
 }
 
-const std::string Ship::getColorAsString() const noexcept
+std::string Ship::getColorAsString() const noexcept
 {
     switch(m_color)
     {
@@ -92,7 +92,7 @@ void Ship::shootForward() noexcept
     }
 }
 
-void Ship::checkBoundriesAndUpdate(const Map& map) noexcept
+void Ship::checkBoundariesAndUpdate(const Map& map) noexcept
 {
     for(const auto& c : m_collider.getTransformed())
     {
@@ -142,7 +142,7 @@ void Ship::reset() noexcept
     m_cannons.clear();
 }
 
-const SDL_Color Ship::getColorAsRGB() const noexcept
+SDL_Color Ship::getColorAsRGB() const noexcept
 {
     if(getColorAsString() == "BLUE") return { 0, 0, 255 };
     else if(getColorAsString() == "RED") return { 255, 0, 0 };
@@ -150,13 +150,13 @@ const SDL_Color Ship::getColorAsRGB() const noexcept
     return { 0, 0, 0 };
 }
 
-void Ship::setHealth(int health) noexcept
+void Ship::setHealth(const int health) noexcept
 {
     m_health = health;
     m_healthUI.getTextureFromFont(m_fontUI, std::format("{:<3}", std::to_string(getHealth())), getColorAsRGB());
 }
 
-void Ship::setPoints(int points) noexcept
+void Ship::setPoints(const int points) noexcept
 {
     m_points = points;
     m_pointsUI.getTextureFromFont(m_fontUI, std::to_string(getPoints()), getColorAsRGB());
