@@ -1,4 +1,3 @@
-# Cardboard-Pirates -------- https://github.com/quonverbat/Cardboard-Pirates
 SHELL := /bin/sh
 BIN_DIR := bin
 BUILD_DIR := build
